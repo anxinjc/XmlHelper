@@ -10,6 +10,11 @@ namespace ConsoleApplication1
     {
         static void Main(string[] args)
         {
+            XmlHelper xml = new XmlHelper();
+
+            xml.Insert();
+
+            Console.Read();
         }
     }
 }
