@@ -6,6 +6,7 @@ using System.Xml;
 /// XML文件存储基类
 /// http://www.cnblogs.com/zery/p/3362480.html
 /// http://outofmemory.cn/code-snippet/15449/C-define-process-xml-data-class
+/// XPath语法：http://www.cnblogs.com/zengsiyu/articles/1525195.html
 /// </summary>
 public abstract class XmlBase 
 {
@@ -29,7 +30,7 @@ public abstract class XmlBase
     }
 
     /// <summary>
-    /// 创建文件
+    /// 创建XML文件
     /// </summary>
     void create()
     {
@@ -47,6 +48,9 @@ public abstract class XmlBase
         Console.WriteLine("【创建文件】" + path);
     }
 
+    /// <summary>
+    /// 读取XML文件
+    /// </summary>
     public XmlDocument Load()
     {
         XmlDocument doc = new XmlDocument();
@@ -56,7 +60,10 @@ public abstract class XmlBase
             if (File.Exists(path))
                 doc.Load(path);
         }
-        catch { }
+        catch
+        {
+            Console.WriteLine("读取XML文件失败");
+        }
 
         return doc;
     }
@@ -67,31 +74,40 @@ public abstract class XmlBase
     /// <param name="node">节点路径</param>
     /// <param name="element">元素名</param>
     /// <param name="inner">【InnerText】</param>
-    public void Insert(string node, string element, string inner)
+    public void InsertNode(string node, string element, string inner)
     {
+        if (node.Equals(""))
+        {
+            Console.WriteLine("插入节点失败，父节点不能为空！");
+            return;
+        }
+
+        if (element.Equals(""))
+        {
+            Console.WriteLine("插入节点失败，要插入的节点不能为空！");
+            return;
+        }
+
         XmlDocument doc = Load();
         XmlNode xn = doc.SelectSingleNode(node);
 
         if (xn == null)
         {
-            Console.WriteLine("指定节点不存在！");
+            Console.WriteLine("指定父节点不存在！");
             return;
         }
+        
 
-        if (!element.Equals(""))
-        {
-            XmlElement xe = doc.CreateElement(element);
+        XmlElement xe = doc.CreateElement(element);
 
-            if (!inner.Equals(""))
-            {
-                xe.InnerText = inner;
-            }
+        if (!inner.Equals(""))
+            xe.InnerText = inner;
 
-            xn.AppendChild(xe);
-        }
+        xn.AppendChild(xe);
 
         doc.Save(path);
     }
+
     /// <summary>
     /// 插入节点
     /// </summary>
@@ -100,33 +116,48 @@ public abstract class XmlBase
     /// <param name="inner">【InnerText】</param>
     /// <param name="attribute">属性名</param>
     /// <param name="value">属性值</param>
-    public void Insert(string node, string element, string inner, string attribute, string value)
+    public void InsertNode(string node, string element, string inner, string attribute, string value)
     {
+        if (node.Equals(""))
+        {
+            Console.WriteLine("插入节点失败，父节点不能为空！");
+            return;
+        }
+
+        if (element.Equals(""))
+        {
+            Console.WriteLine("插入节点失败，要插入的节点不能为空！");
+            return;
+        }
+
+        if (attribute.Contains(" "))
+        {
+            Console.WriteLine("插入节点失败，要插入的属性不能包含空格！");
+            return;
+        }
+
         XmlDocument doc = Load();
         XmlNode xn = doc.SelectSingleNode(node);
 
         if (xn == null)
         {
-            Console.WriteLine("指定节点不存在！");
+            Console.WriteLine("指定父节点不存在！");
             return;
         }
+        
+        XmlElement xe = doc.CreateElement(element);
 
-        if (!element.Equals(""))
+        if (!attribute.Equals(""))
         {
-            XmlElement xe = doc.CreateElement(element);
-
-            if (!attribute.Equals(""))
-            {
-                xe.SetAttribute(attribute, value);
-            }
-
-            if (!inner.Equals(""))
-            {
-                xe.InnerText = inner;
-            }
-
-            xn.AppendChild(xe);
+            xe.SetAttribute(attribute, value);
         }
+
+        if (!inner.Equals(""))
+        {
+            xe.InnerText = inner;
+        }
+
+        xn.AppendChild(xe);
 
         doc.Save(path);
     }

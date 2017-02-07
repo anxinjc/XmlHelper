@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿//XPath语法：http://www.cnblogs.com/zengsiyu/articles/1525195.html
 
 namespace ConsoleApplication1
 {
@@ -28,10 +24,10 @@ namespace ConsoleApplication1
         /// </summary>
         public void Insert()
         {
-            base.Insert("personList", "person0", "Han Mei Mei");
-            base.Insert("personList", "person1", "Li Lei", "Age", "18");
+            base.InsertNode("personList", "person0", "Han Mei Mei");
+            base.InsertNode("personList", "person2", "Li Lei", "Age", "18");
 
-            base.Insert("personList/person1[@Age='18']", "", "Bei Jing Da Xue", "Age", "18");
+            base.InsertNode("personList/person2[@Age='18']", "school", "Bei Jing Da Xue", "during Years", "4");
         }
     }
 }
