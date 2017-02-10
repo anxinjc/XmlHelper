@@ -67,8 +67,20 @@ public abstract class XmlBase
     /// <param name="node">节点路径</param>
     /// <param name="element">元素名</param>
     /// <param name="inner">【InnerText】</param>
-    public void Insert(string node, string element, string inner)
+    public void InsertNode(string node, string element, string inner)
     {
+        if (node.Equals(""))
+        {
+            Console.WriteLine("父节点不能为空");
+            return;
+        }
+
+        if (element.Equals(""))
+        {
+            Console.WriteLine("插入节点不能为空");
+            return;
+        }
+
         XmlDocument doc = Load();
         XmlNode xn = doc.SelectSingleNode(node);
 
@@ -78,17 +90,13 @@ public abstract class XmlBase
             return;
         }
 
-        if (!element.Equals(""))
-        {
-            XmlElement xe = doc.CreateElement(element);
+        //插入节点
+        XmlElement xe = doc.CreateElement(element);
 
-            if (!inner.Equals(""))
-            {
-                xe.InnerText = inner;
-            }
+        if (!inner.Equals(""))
+            xe.InnerText = inner;
 
-            xn.AppendChild(xe);
-        }
+        xn.AppendChild(xe);
 
         doc.Save(path);
     }
@@ -100,8 +108,63 @@ public abstract class XmlBase
     /// <param name="inner">【InnerText】</param>
     /// <param name="attribute">属性名</param>
     /// <param name="value">属性值</param>
-    public void Insert(string node, string element, string inner, string attribute, string value)
+    public void InsertNode(string node, string element, string inner, string attribute, string value)
     {
+        if (node.Equals(""))
+        {
+            Console.WriteLine("父节点不能为空");
+            return;
+        }
+
+        if (element.Equals(""))
+        {
+            Console.WriteLine("插入节点不能为空");
+            return;
+        }
+
+        XmlDocument doc = Load();
+        XmlNode xn = doc.SelectSingleNode(node);
+
+        if (xn == null)
+        {
+            Console.WriteLine("指定节点不存在！");
+            return;
+        }
+        
+        //插入节点
+        XmlElement xe = doc.CreateElement(element);
+
+        if (!attribute.Equals(""))
+            xe.SetAttribute(attribute, value);
+
+        if (!inner.Equals(""))
+            xe.InnerText = inner;
+
+        xn.AppendChild(xe);
+
+        doc.Save(path);
+    }
+
+    /// <summary>
+    /// 设置属性，如果属性不存在，则添加属性，如果属性已存在，则修改属性值
+    /// </summary>
+    /// <param name="node">节点</param>
+    /// <param name="attribute">属性名</param>
+    /// <param name="value">属性值</param>
+    public void SetAttribute(string node, string attribute, string value)
+    {
+        if (node.Equals(""))
+        {
+            Console.WriteLine("节点不能为空");
+            return;
+        }
+
+        if (attribute.Equals(""))
+        {
+            Console.WriteLine("属性名不能为空");
+            return;
+        }
+
         XmlDocument doc = Load();
         XmlNode xn = doc.SelectSingleNode(node);
 
@@ -111,23 +174,23 @@ public abstract class XmlBase
             return;
         }
 
-        if (!element.Equals(""))
+        if (xn.Attributes[attribute] == null)
         {
-            XmlElement xe = doc.CreateElement(element);
 
-            if (!attribute.Equals(""))
-            {
-                xe.SetAttribute(attribute, value);
-            }
+            //添加属性
 
-            if (!inner.Equals(""))
-            {
-                xe.InnerText = inner;
-            }
-
-            xn.AppendChild(xe);
+            XmlAttribute xa = doc.CreateAttribute(attribute);
+            xa.InnerText = value;
+            xn.Attributes.Append(xa);
         }
+        else
+        {
 
+            //修改属性值
+
+            xn.Attributes[attribute].Value = value;
+        }
+        
         doc.Save(path);
     }
 
@@ -136,8 +199,14 @@ public abstract class XmlBase
     /// </summary>
     /// <param name="node">节点路径</param>
     /// <param name="inner">【InnerText】</param>
-    public void Update(string node, string inner)
+    public void UpdateNode(string node, string inner)
     {
+        if (node.Equals(""))
+        {
+            Console.WriteLine("父节点不能为空");
+            return;
+        }
+
         XmlDocument doc = Load();
         XmlNode xn = doc.SelectSingleNode(node);
 
@@ -164,8 +233,14 @@ public abstract class XmlBase
     /// <param name="inner">【InnerText】</param>
     /// <param name="attribute">属性名</param>
     /// <param name="value">属性值</param>
-    public void Update(string node, string inner, string attribute, string value)
+    public void UpdateNode(string node, string inner, string attribute, string value)
     {
+        if (node.Equals(""))
+        {
+            Console.WriteLine("父节点不能为空");
+            return;
+        }
+
         XmlDocument doc = Load();
         XmlNode xn = doc.SelectSingleNode(node);
 
@@ -207,6 +282,11 @@ public abstract class XmlBase
             return true;
     }
 
+    /// <summary>
+    /// 读取子节点数量
+    /// </summary>
+    /// <param name="node"></param>
+    /// <returns></returns>
     public int ReadChildCount(string node)
     {
         XmlDocument doc = Load();

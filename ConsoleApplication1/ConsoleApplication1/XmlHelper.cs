@@ -28,10 +28,16 @@ namespace ConsoleApplication1
         /// </summary>
         public void Insert()
         {
-            base.Insert("personList", "person0", "Han Mei Mei");
-            base.Insert("personList", "person1", "Li Lei", "Age", "18");
+            base.RemoveAllChilds(base.rootName);
 
-            base.Insert("personList/person1[@Age='18']", "", "Bei Jing Da Xue", "Age", "18");
+            base.InsertNode("personList", "person0", "Han Mei Mei");
+            base.InsertNode("personList", "person1", "Li Lei", "Age", "18");
+            
+
+            base.InsertNode(base.rootName, "aaa", "inner");
+            base.SetAttribute(base.rootName + "/aaa[@name='aaa-name2']", "sex", "female");
+
+            
         }
     }
 }
